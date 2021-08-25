@@ -2,7 +2,9 @@ package com.udacity.todoMaps.locationreminders.reminderslist
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
+import com.udacity.todoMaps.authentication.FirebaseUserLiveData
 import com.udacity.todoMaps.base.BaseViewModel
 import com.udacity.todoMaps.locationreminders.data.ReminderDataSource
 import com.udacity.todoMaps.locationreminders.data.dto.ReminderDTO
@@ -15,6 +17,23 @@ class RemindersListViewModel(
 ) : BaseViewModel(app) {
     // list that holds the reminder data to be displayed on the UI
     val remindersList = MutableLiveData<List<ReminderDataItem>>()
+
+    enum class AuthenticationState {
+        AUTHENTICATED, UNAUTHENTICATED, INVALID_AUTHENTICATION
+    }
+
+    //  Create an authenticationState variable based off the FirebaseUserLiveData object. By
+    //  creating this variable, other classes will be able to query for whether the user is logged
+    //  in or not
+
+    val authenticationState = FirebaseUserLiveData().map { user ->
+        if (user != null) {
+            AuthenticationState.AUTHENTICATED
+        } else {
+            AuthenticationState.UNAUTHENTICATED
+        }
+    }
+
 
     /**
      * Get all the reminders from the DataSource and add them to the remindersList to be shown on the UI,

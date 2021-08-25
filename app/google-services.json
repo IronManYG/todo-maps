@@ -1,0 +1,76 @@
+{
+  "project_info": {
+    "project_number": "787219705091",
+    "project_id": "todo-maps-40562",
+    "storage_bucket": "todo-maps-40562.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787219705091:android:5459bbb1daa8a76700cd36",
+        "android_client_info": {
+          "package_name": "com.udacity.project4"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmVMtwRo7w667n7g5RGUreEJw07MwA2Ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:787219705091:android:d0d0fdaed1e8ed8a00cd36",
+        "android_client_info": {
+          "package_name": "com.udacity.todoMaps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "787219705091-gpfiar3jgndfacbour0b6n6iv2bo37kq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.udacity.todoMaps",
+            "certificate_hash": "8b6b76f6fbb1bc747b1ae9e18f6f83de58cdac89"
+          }
+        },
+        {
+          "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmVMtwRo7w667n7g5RGUreEJw07MwA2Ws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

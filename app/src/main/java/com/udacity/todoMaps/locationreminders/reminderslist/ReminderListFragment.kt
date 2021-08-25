@@ -1,14 +1,19 @@
 package com.udacity.todoMaps.locationreminders.reminderslist
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
+import com.firebase.ui.auth.AuthUI
 import com.udacity.todoMaps.R
+import com.udacity.todoMaps.authentication.AuthenticationActivity
 import com.udacity.todoMaps.base.BaseFragment
 import com.udacity.todoMaps.base.NavigationCommand
 import com.udacity.todoMaps.databinding.FragmentRemindersBinding
 import com.udacity.todoMaps.utils.setDisplayHomeAsUpEnabled
 import com.udacity.todoMaps.utils.setTitle
+import com.udacity.todoMaps.utils.setup
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ReminderListFragment : BaseFragment() {
@@ -31,6 +36,8 @@ class ReminderListFragment : BaseFragment() {
         setTitle(getString(R.string.app_name))
 
         binding.refreshLayout.setOnRefreshListener { _viewModel.loadReminders() }
+
+        observeAuthenticationState()
 
         return binding.root
     }
@@ -70,7 +77,8 @@ class ReminderListFragment : BaseFragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.logout -> {
-//                TODO: add the logout implementation
+//                : add the logout implementation
+                AuthUI.getInstance().signOut(requireContext())
             }
         }
         return super.onOptionsItemSelected(item)
@@ -81,6 +89,22 @@ class ReminderListFragment : BaseFragment() {
         super.onCreateOptionsMenu(menu, inflater)
 //        display logout as menu item
         inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    private fun observeAuthenticationState() {
+
+        _viewModel.authenticationState.observe(viewLifecycleOwner, Observer { authenticationState ->
+
+            when (authenticationState) {
+                RemindersListViewModel.AuthenticationState.UNAUTHENTICATED -> {
+                    val intent = Intent(context, AuthenticationActivity::class.java)
+                    startActivity(intent)
+                }
+                else -> {
+
+                }
+            }
+        })
     }
 
 }
