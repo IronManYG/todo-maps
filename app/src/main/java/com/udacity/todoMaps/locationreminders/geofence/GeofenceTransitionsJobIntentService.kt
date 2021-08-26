@@ -2,8 +2,11 @@ package com.udacity.todoMaps.locationreminders.geofence
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import androidx.core.app.JobIntentService
 import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofenceStatusCodes
+import com.google.android.gms.location.GeofencingEvent
 import com.udacity.todoMaps.locationreminders.data.dto.ReminderDTO
 import com.udacity.todoMaps.locationreminders.data.dto.Result
 import com.udacity.todoMaps.locationreminders.data.local.RemindersLocalRepository
@@ -35,7 +38,27 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
     override fun onHandleWork(intent: Intent) {
         //TODO: handle the geofencing transition events and
         // send a notification to the user when he enters the geofence area
-        //TODO call @sendNotification
+        val geofencingEvent = GeofencingEvent.fromIntent(intent)
+
+        if (geofencingEvent.hasError()) {
+            val errorMessage = GeofenceStatusCodes.getStatusCodeString(geofencingEvent.errorCode)
+            Log.e(TAG, errorMessage)
+            return
+        }
+        // Get the transition type
+        val geofenceTransition = geofencingEvent.geofenceTransition
+
+        // Test that the reported transition was of interest
+        if (geofenceTransition == Geofence.GEOFENCE_TRANSITION_ENTER) {
+
+            // Get the geofences that we triggered. A single event can trigger
+            // multiple geofences.
+            val triggeringGeofences = geofencingEvent.triggeringGeofences
+
+            //TODO call @sendNotification
+            sendNotification(triggeringGeofences)
+            Log.i(TAG, "geofence present")
+        }
     }
 
     //TODO: get the request id of the current geofence
@@ -64,5 +87,6 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
             }
         }
     }
-
 }
+
+private const val TAG = "GeofenceTransitionsJob"
