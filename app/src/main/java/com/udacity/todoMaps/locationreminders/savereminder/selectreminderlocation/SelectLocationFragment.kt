@@ -3,28 +3,27 @@ package com.udacity.todoMaps.locationreminders.savereminder.selectreminderlocati
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.location.Location
 import android.os.Bundle
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.BitmapDescriptorFactory
-import com.google.android.gms.maps.model.GroundOverlayOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.*
+import com.google.android.gms.maps.model.*
 import com.udacity.todoMaps.R
 import com.udacity.todoMaps.base.BaseFragment
+import com.udacity.todoMaps.base.NavigationCommand
 import com.udacity.todoMaps.databinding.FragmentSelectLocationBinding
 import com.udacity.todoMaps.locationreminders.savereminder.SaveReminderViewModel
 import com.udacity.todoMaps.utils.setDisplayHomeAsUpEnabled
 import org.koin.android.ext.android.inject
+import java.util.*
 
 class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 
@@ -33,6 +32,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private lateinit var binding: FragmentSelectLocationBinding
 
     private lateinit var map: GoogleMap
+    private var marker: Marker? = null
     private val TAG = SelectLocationFragment::class.java.simpleName
     private val REQUEST_LOCATION_PERMISSION = 1
 
@@ -63,13 +63,15 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
 //        : add the map setup implementation
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
         mapFragment?.getMapAsync(this)
-//        TODO: zoom to the user location after taking his permission
-//        TODO: add style to the map
-//        TODO: put a marker to location that the user selected
 
+//        : zoom to the user location after taking his permission
+        // Construct a FusedLocationProviderClient.
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-//        TODO: call this function after the user confirms on the selected location
-        onLocationSelected()
+//        : add style to the map
+//        : put a marker to location that the user selected
+//        : call this function after the user confirms on the selected location
+        binding.savePonitOfInterest.setOnClickListener { onLocationSelected() }
 
         return binding.root
     }
@@ -77,26 +79,33 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         map = googleMap
 
-//        //These coordinates represent the lattitude and longitude of the Googleplex.
-//        val latitude = 37.422160
-//        val longitude = -122.084270
-//        val zoomLevel = 15f
-//
-//        val homeLatLng = LatLng(latitude, longitude)
-//        map.moveCamera(CameraUpdateFactory.newLatLngZoom(homeLatLng, zoomLevel))
-//        map.addMarker(MarkerOptions().position(homeLatLng))
+        setMapStyle(map)
 
         enableMyLocation()
 
         getDeviceLocation()
 
+        setMapLongClick(map)
+
+        setPoiClick(map)
 
     }
 
     private fun onLocationSelected() {
-        //        TODO: When the user confirms on the selected location,
+        //        : When the user confirms on the selected location,
         //         send back the selected location details to the view model
         //         and navigate back to the previous fragment to save the reminder and add the geofence
+      val position = marker?.position
+        if (position != null) {
+            _viewModel.latitude.postValue(position.latitude)
+            _viewModel.longitude.postValue(position.longitude)
+
+            // navigate back to the save reminder screen
+            _viewModel.navigationCommand.postValue(NavigationCommand.Back)
+        }else{
+            Toast.makeText(context, "Please select location", Toast.LENGTH_SHORT).show()
+        }
+
     }
 
 
@@ -136,6 +145,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     private fun enableMyLocation() {
         if (isPermissionGranted()) {
             map.setMyLocationEnabled(true)
+            locationPermissionGranted = true
         }
         else {
             requestPermissions(
@@ -178,16 +188,16 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                         // Set the map's camera position to the current location of the device.
                         lastKnownLocation = task.result
                         if (lastKnownLocation != null) {
-                            map?.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 LatLng(lastKnownLocation!!.latitude,
                                     lastKnownLocation!!.longitude), DEFAULT_ZOOM.toFloat()))
                         }
                     } else {
                         Log.d(TAG, "Current location is null. Using defaults.")
                         Log.e(TAG, "Exception: %s", task.exception)
-                        map?.moveCamera(CameraUpdateFactory
+                        map.moveCamera(CameraUpdateFactory
                             .newLatLngZoom(defaultLocation, DEFAULT_ZOOM.toFloat()))
-                        map?.uiSettings?.isMyLocationButtonEnabled = false
+                        map.uiSettings?.isMyLocationButtonEnabled = false
                     }
                 }
             }
@@ -196,6 +206,59 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
         }
     }
     // [END maps_current_place_get_device_location]
+
+    // Allows map styling and theming to be customized.
+    private fun setMapStyle(map: GoogleMap) {
+        try {
+            // Customize the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            val success = map.setMapStyle(
+                MapStyleOptions.loadRawResourceStyle(
+                    context,
+                    R.raw.map_style
+                )
+            )
+
+            if (!success) {
+                Log.e(TAG, "Style parsing failed.")
+            }
+        } catch (e: Resources.NotFoundException) {
+            Log.e(TAG, "Can't find style. Error: ", e)
+        }
+    }
+
+    // Called when user makes a long press gesture on the map.
+    private fun setMapLongClick(map: GoogleMap) {
+        map.setOnMapLongClickListener { latLng ->
+            marker?.remove()
+            // A Snippet is Additional text that's displayed below the title.
+            val snippet = String.format(
+                Locale.getDefault(),
+                "Lat: %1$.5f, Long: %2$.5f",
+                latLng.latitude,
+                latLng.longitude
+            )
+           marker = map.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title(getString(R.string.dropped_pin))
+                    .snippet(snippet)
+            )
+        }
+    }
+
+    // Places a marker on the map and displays an info window that contains POI name.
+    private fun setPoiClick(map: GoogleMap) {
+        map.setOnPoiClickListener { poi ->
+            marker?.remove()
+             marker = map.addMarker(
+                MarkerOptions()
+                    .position(poi.latLng)
+                    .title(poi.name)
+            )
+            marker?.showInfoWindow()
+        }
+    }
 
     companion object {
         private const val DEFAULT_ZOOM = 15
