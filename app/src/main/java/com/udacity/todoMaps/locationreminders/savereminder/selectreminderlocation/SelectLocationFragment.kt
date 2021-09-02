@@ -244,6 +244,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     .title(getString(R.string.dropped_pin))
                     .snippet(snippet)
             )
+            _viewModel.reminderSelectedLocationStr.postValue(getString(R.string.dropped_pin))
         }
     }
 
@@ -257,6 +258,7 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
                     .title(poi.name)
             )
             marker?.showInfoWindow()
+            _viewModel.reminderSelectedLocationStr.postValue(poi.name)
         }
     }
 
