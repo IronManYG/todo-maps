@@ -35,7 +35,7 @@ class SaveReminderFragment : BaseFragment() {
     override val _viewModel: SaveReminderViewModel by inject()
     private lateinit var binding: FragmentSaveReminderBinding
     private lateinit var reminderDataItem: ReminderDataItem
-    lateinit var geofencingClient: GeofencingClient
+    private lateinit var geofencingClient: GeofencingClient
 
     private val runningQOrLater =
         android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
@@ -66,6 +66,8 @@ class SaveReminderFragment : BaseFragment() {
 
         binding.viewModel = _viewModel
 
+        geofencingClient = LocationServices.getGeofencingClient(requireActivity())
+
         return binding.root
     }
 
@@ -79,8 +81,6 @@ class SaveReminderFragment : BaseFragment() {
                 NavigationCommand.To(SaveReminderFragmentDirections.actionSaveReminderFragmentToSelectLocationFragment())
         }
 
-        geofencingClient = LocationServices.getGeofencingClient(requireActivity())
-
         binding.saveReminder.setOnClickListener {
             val title = _viewModel.reminderTitle.value
             val description = _viewModel.reminderDescription.value
@@ -88,7 +88,7 @@ class SaveReminderFragment : BaseFragment() {
             val latitude = _viewModel.latitude.value
             val longitude = _viewModel.longitude.value
 
-//            TODO: use the user entered reminder details to:
+//            : use the user entered reminder details to:
 //             1) add a geofencing request
 //             2) save the reminder to the local db
 
@@ -160,12 +160,26 @@ class SaveReminderFragment : BaseFragment() {
         // Build the geofence request
         val geofencingRequest = getGeofencingRequest(geofence)
 
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
         geofencingClient?.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
                 // Geofences added
                 _viewModel.validateAndSaveReminder(reminderDataItem)
                 Toast.makeText(requireContext(), "Geofence added!", Toast.LENGTH_SHORT).show()
-                Log.e("Add Geofence", geofence.requestId)
+                Log.v("Add Geofence", geofence.requestId)
             }
             addOnFailureListener {
                 // Failed to add geofences

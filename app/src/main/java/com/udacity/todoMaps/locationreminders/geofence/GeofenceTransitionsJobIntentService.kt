@@ -23,6 +23,8 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         get() = Dispatchers.IO + coroutineJob
 
     companion object {
+        private const val TAG = "GeofenceTransitionsJob"
+
         private const val JOB_ID = 573
 
         //        : call this to start the JobIntentService to handle the geofencing transition events
@@ -91,5 +93,3 @@ class GeofenceTransitionsJobIntentService : JobIntentService(), CoroutineScope {
         }
     }
 }
-
-private const val TAG = "GeofenceTransitionsJob"
