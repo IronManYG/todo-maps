@@ -1,70 +1,41 @@
 {
   "project_info": {
-    "project_number": "787219705091",
-    "project_id": "todo-maps-40562",
-    "storage_bucket": "todo-maps-40562.appspot.com"
+    "project_number": "1026405872588",
+    "project_id": "my-project-4-70dee",
+    "storage_bucket": "my-project-4-70dee.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:787219705091:android:5459bbb1daa8a76700cd36",
+        "mobilesdk_app_id": "1:1026405872588:android:f43565930c59738aca6369",
         "android_client_info": {
           "package_name": "com.udacity.project4"
         }
       },
       "oauth_client": [
         {
-          "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCmVMtwRo7w667n7g5RGUreEJw07MwA2Ws"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:787219705091:android:d0d0fdaed1e8ed8a00cd36",
-        "android_client_info": {
-          "package_name": "com.udacity.todoMaps"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "787219705091-gpfiar3jgndfacbour0b6n6iv2bo37kq.apps.googleusercontent.com",
+          "client_id": "1026405872588-slc4uq2jp386v70aeimmr6ns8hmlem8g.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.udacity.todoMaps",
+            "package_name": "com.udacity.project4",
             "certificate_hash": "8b6b76f6fbb1bc747b1ae9e18f6f83de58cdac89"
           }
         },
         {
-          "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
+          "client_id": "1026405872588-smjst6msq754eduntornsgggr2r0cke3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCmVMtwRo7w667n7g5RGUreEJw07MwA2Ws"
+          "current_key": "AIzaSyACt0vthrJy0S3C7Gi4x7TfAgeHTXdEbFo"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "787219705091-fhv126fvppp2ke3pr317p87bga8j3ofn.apps.googleusercontent.com",
+              "client_id": "1026405872588-smjst6msq754eduntornsgggr2r0cke3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
