@@ -14,11 +14,13 @@ import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.`is`
 import org.hamcrest.core.IsNot
+import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.koin.core.context.stopKoin
 
 @RunWith(AndroidJUnit4::class)
 @ExperimentalCoroutinesApi
@@ -42,6 +44,11 @@ class RemindersListViewModelTest {
     fun setupFirebase() {
         // initialize the firebase
         FirebaseApp.initializeApp(ApplicationProvider.getApplicationContext())
+    }
+
+    @After
+    fun tearDown() {
+        stopKoin()
     }
 
     // Executes each task synchronously using Architecture Components.
