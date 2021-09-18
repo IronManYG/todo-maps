@@ -13,7 +13,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.MatcherAssert
 import org.hamcrest.Matchers.`is`
-import org.hamcrest.core.IsNot
 import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
@@ -26,7 +25,7 @@ import org.koin.core.context.stopKoin
 @ExperimentalCoroutinesApi
 class RemindersListViewModelTest {
 
-    //TODO: provide testing to the RemindersListViewModel and its live data objects
+    //: provide testing to the RemindersListViewModel and its live data objects
 
     // Use a fake DataSource to be injected into the viewmodel
     private lateinit var dataSource: FakeDataSource
@@ -92,6 +91,64 @@ class RemindersListViewModelTest {
         // Then a snack bar with the message "No reminders found" is shown
         val value = remindersListViewModel.showSnackBar.getOrAwaitValue()
 
-        MatcherAssert.assertThat(value,`is`("Reminders not found!"))
+        assertThat(value,`is`("Reminders not found!"))
+    }
+
+    @Test
+    fun loadReminders_showLoading() {
+        // Pause dispatcher so you can verify initial values.
+        mainCoroutineRule.pauseDispatcher()
+
+        // Given  a data source containing a reminders list
+        val localReminders = listOf(reminder1,reminder2,reminder3).sortedBy { it.id }
+
+        dataSource = FakeDataSource(localReminders.toMutableList())
+
+        // Given a fresh RemindersListViewModel
+        remindersListViewModel = RemindersListViewModel(ApplicationProvider.getApplicationContext(),dataSource)
+
+        // When load reminders from data source
+        remindersListViewModel.loadReminders()
+
+        // Then assert that the progress indicator is shown.
+        MatcherAssert.assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(true))
+
+        // Execute pending coroutines actions.
+        mainCoroutineRule.resumeDispatcher()
+
+        // Then assert that the progress indicator is shown.
+        MatcherAssert.assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(false))
+    }
+
+    @Test
+    fun loadReminders_showNoData_for_nullList() {
+        // Given  a data source containing a reminders list
+        val localReminders = null
+
+        dataSource = FakeDataSource(localReminders)
+
+        // Given a fresh RemindersListViewModel
+        remindersListViewModel = RemindersListViewModel(ApplicationProvider.getApplicationContext(),dataSource)
+
+        // When load reminders from data source
+        remindersListViewModel.loadReminders()
+
+        // Then assert that the progress indicator is shown.
+        assertThat(remindersListViewModel.showNoData.getOrAwaitValue(), `is`(true))
+    }
+
+    @Test
+    fun loadReminders_showNoData_for_emptyList() {
+        // Given a data source containing null
+        dataSource = FakeDataSource()
+
+        // Given a fresh RemindersListViewModel
+        remindersListViewModel = RemindersListViewModel(ApplicationProvider.getApplicationContext(),dataSource)
+
+        // When load reminders from data source
+        remindersListViewModel.loadReminders()
+
+        // Then assert that the progress indicator is shown.
+        assertThat(remindersListViewModel.showNoData.getOrAwaitValue(), `is`(true))
     }
 }
