@@ -116,7 +116,7 @@ class RemindersListViewModelTest {
         // Execute pending coroutines actions.
         mainCoroutineRule.resumeDispatcher()
 
-        // Then assert that the progress indicator is shown.
+        // Then assert that the progress indicator is not shown.
         MatcherAssert.assertThat(remindersListViewModel.showLoading.getOrAwaitValue(), `is`(false))
     }
 
@@ -139,7 +139,7 @@ class RemindersListViewModelTest {
 
     @Test
     fun loadReminders_showNoDataForEmptyList() {
-        // Given a data source containing null
+        // Given a data source containing emptyList
         dataSource = FakeDataSource()
 
         // Given a fresh RemindersListViewModel
