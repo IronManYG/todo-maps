@@ -95,7 +95,7 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun loadReminders_showLoading() {
+    fun loadReminders_showLoadingBeforePopulatedRemindersList() {
         // Pause dispatcher so you can verify initial values.
         mainCoroutineRule.pauseDispatcher()
 
@@ -121,7 +121,7 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun loadReminders_showNoData_for_nullList() {
+    fun loadReminders_showNoDataForNullList() {
         // Given  a data source containing a reminders list
         val localReminders = null
 
@@ -138,7 +138,7 @@ class RemindersListViewModelTest {
     }
 
     @Test
-    fun loadReminders_showNoData_for_emptyList() {
+    fun loadReminders_showNoDataForEmptyList() {
         // Given a data source containing null
         dataSource = FakeDataSource()
 
