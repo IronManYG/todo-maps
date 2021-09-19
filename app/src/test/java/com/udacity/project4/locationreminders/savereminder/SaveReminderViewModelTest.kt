@@ -24,7 +24,7 @@ import org.koin.core.context.stopKoin
 @RunWith(AndroidJUnit4::class)
 class SaveReminderViewModelTest {
 
-    //TODO: provide testing to the SaveReminderView and its live data objects
+    //: provide testing to the SaveReminderView and its live data objects
 
     // Use a fake DataSource to be injected into the viewModel
     private lateinit var dataSource: FakeDataSource
