@@ -23,7 +23,7 @@ import org.junit.runner.RunWith
 @MediumTest
 class RemindersLocalRepositoryTest {
 
-//    TODO: Add testing implementation to the RemindersLocalRepository.kt
+//    : Add testing implementation to the RemindersLocalRepository.kt
 
     // Class under test
     private lateinit var remindersLocalRepository: RemindersLocalRepository
