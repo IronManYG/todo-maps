@@ -8,6 +8,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.test.core.app.ApplicationProvider.getApplicationContext
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -20,6 +21,9 @@ import com.udacity.project4.locationreminders.data.dto.Result
 import com.udacity.project4.locationreminders.data.local.FakeAndroidTestRepository
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
+import com.udacity.project4.util.DataBindingIdlingResource
+import com.udacity.project4.util.monitorFragment
+import com.udacity.project4.utils.EspressoIdlingResource
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -44,6 +48,9 @@ class ReminderListFragmentTest {
     private lateinit var datasource: ReminderDataSource
 
     private lateinit var appContext: Application
+
+    // An idling resource that waits for Data Binding to have no pending bindings.
+    private val dataBindingIdlingResource = DataBindingIdlingResource()
 
     @Before
     fun startKoinForTest() {
@@ -82,6 +89,25 @@ class ReminderListFragmentTest {
     @After
     fun stopKoinAfterTest() = stopKoin()
 
+    /**
+     * Idling resources tell Espresso that the app is idle or busy. This is needed when operations
+     * are not scheduled in the main Looper (for example when executed on a different thread).
+     */
+    @Before
+    fun registerIdlingResource() {
+        IdlingRegistry.getInstance().register(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().register(dataBindingIdlingResource)
+    }
+
+    /**
+     * Unregister your Idling Resource so it can be garbage collected and does not leak any memory.
+     */
+    @After
+    fun unregisterIdlingResource() {
+        IdlingRegistry.getInstance().unregister(EspressoIdlingResource.countingIdlingResource)
+        IdlingRegistry.getInstance().unregister(dataBindingIdlingResource)
+    }
+
     // Executes each task synchronously using Architecture Components.
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -92,6 +118,8 @@ class ReminderListFragmentTest {
     fun clickAddReminderButton_navigateToSaveReminderFragment() {
         // GIVEN - On the home screen
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario) // LOOK HERE
+
         val navController = mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
@@ -123,6 +151,8 @@ class ReminderListFragmentTest {
 
         // When fragment is launched
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario) // LOOK HERE
+
         val navController = mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
@@ -143,6 +173,8 @@ class ReminderListFragmentTest {
     fun reminderListFragment_DisplayedInUiWithNoReminders() {
         // When fragment is launched
         val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario) // LOOK HERE
+
         val navController = mock(NavController::class.java)
         scenario.onFragment {
             Navigation.setViewNavController(it.view!!, navController)
@@ -157,7 +189,7 @@ class ReminderListFragmentTest {
 //    fun reminderListFragment_ShowSnackBarWithErrorMessage() {
 //        var message:String? = null
 //
-//        // When load reminders from data source
+//        // When loaded reminders from data source get error
 //        runBlocking {
 //            datasource.setReturnError(true)
 //            val result = datasource.getReminders() as Result.Error
@@ -165,6 +197,8 @@ class ReminderListFragmentTest {
 //        }
 //        // When fragment is launched
 //        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+//        dataBindingIdlingResource.monitorFragment(scenario) // LOOK HERE
+//
 //        val navController = mock(NavController::class.java)
 //        scenario.onFragment {
 //            Navigation.setViewNavController(it.view!!, navController)
