@@ -23,7 +23,7 @@ class FakeAndroidTestRepository(
 
     override suspend fun getReminders(): Result<List<ReminderDTO>> = withContext(ioDispatcher) {
         if (shouldReturnError) {
-            Result.Error("Test exception")
+            return@withContext Result.Error("Test exception")
         }
 
         return@withContext Result.Success(remindersServiceData.values.toList())
@@ -37,7 +37,7 @@ class FakeAndroidTestRepository(
 
     override suspend fun getReminder(id: String): Result<ReminderDTO> = withContext(ioDispatcher){
         if (shouldReturnError) {
-            Result.Error("Test exception")
+            return@withContext  Result.Error("Test exception")
         }
         remindersServiceData[id]?.let {
             return@withContext Result.Success(it)

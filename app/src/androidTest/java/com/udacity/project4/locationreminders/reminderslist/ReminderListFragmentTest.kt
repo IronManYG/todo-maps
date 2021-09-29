@@ -45,7 +45,7 @@ import org.mockito.Mockito.verify
 @MediumTest
 class ReminderListFragmentTest {
 
-    private lateinit var datasource: ReminderDataSource
+    private lateinit var datasource: FakeAndroidTestRepository
 
     private lateinit var appContext: Application
 
@@ -68,7 +68,7 @@ class ReminderListFragmentTest {
             // RemindersLocalRepository
             single<RemindersLocalRepository> { RemindersLocalRepository(get()) }
             // ReminderDataSource
-            single<ReminderDataSource> { get<RemindersLocalRepository>() }
+            single<ReminderDataSource> { get<FakeAndroidTestRepository>() }
             // FakeAndroidTestRepository
             single<FakeAndroidTestRepository> { FakeAndroidTestRepository(get()) }
             single { LocalDB.createRemindersDao(appContext) }
@@ -184,29 +184,29 @@ class ReminderListFragmentTest {
         onView(withText(R.string.no_data)).check(matches(isDisplayed()))
     }
 
-    //    TODO: add testing for the error messages.
-//    @Test
-//    fun reminderListFragment_ShowSnackBarWithErrorMessage() {
-//        var message:String? = null
-//
-//        // When loaded reminders from data source get error
-//        runBlocking {
-//            datasource.setReturnError(true)
-//            val result = datasource.getReminders() as Result.Error
-//            message = result.message
-//        }
-//        // When fragment is launched
-//        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
-//        dataBindingIdlingResource.monitorFragment(scenario) // LOOK HERE
-//
-//        val navController = mock(NavController::class.java)
-//        scenario.onFragment {
-//            Navigation.setViewNavController(it.view!!, navController)
-//        }
-//
-//        // Then - Verify that
-//        onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(isDisplayed()))
-//        onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(withText(message)))
-//    }
+    //    : add testing for the error messages.
+    @Test
+    fun reminderListFragment_ShowSnackBarWithErrorMessage() {
+        var message:String? = null
+
+        // When loaded reminders from data source get error
+        runBlocking {
+            datasource.setReturnError(true)
+            val result = datasource.getReminders() as Result.Error
+            message = result.message
+        }
+        // When fragment is launched
+        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+        dataBindingIdlingResource.monitorFragment(scenario) // LOOK HERE
+
+        val navController = mock(NavController::class.java)
+        scenario.onFragment {
+            Navigation.setViewNavController(it.view!!, navController)
+        }
+
+        // Then - Verify that
+        onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(isDisplayed()))
+        onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(withText(message)))
+    }
 
 }
