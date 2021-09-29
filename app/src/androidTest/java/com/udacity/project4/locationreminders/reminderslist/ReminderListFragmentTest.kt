@@ -17,17 +17,16 @@ import com.udacity.project4.R
 import com.udacity.project4.locationreminders.data.ReminderDataSource
 import com.udacity.project4.locationreminders.data.dto.ReminderDTO
 import com.udacity.project4.locationreminders.data.dto.Result
+import com.udacity.project4.locationreminders.data.local.FakeAndroidTestRepository
 import com.udacity.project4.locationreminders.data.local.LocalDB
 import com.udacity.project4.locationreminders.data.local.RemindersLocalRepository
-import com.udacity.project4.locationreminders.savereminder.SaveReminderViewModel
-import com.udacity.project4.util.monitorFragment
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
-import org.hamcrest.Matchers
-import org.junit.*
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 import org.junit.runner.RunWith
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.core.context.GlobalContext
 import org.koin.core.context.startKoin
@@ -60,7 +59,11 @@ class ReminderListFragmentTest {
                 )
             }
             // RemindersLocalRepository
-            single { RemindersLocalRepository(get()) as ReminderDataSource }
+            single<RemindersLocalRepository> { RemindersLocalRepository(get()) }
+            // ReminderDataSource
+            single<ReminderDataSource> { get<RemindersLocalRepository>() }
+            // FakeAndroidTestRepository
+            single<FakeAndroidTestRepository> { FakeAndroidTestRepository(get()) }
             single { LocalDB.createRemindersDao(appContext) }
         }
         //declare a new koin module
@@ -68,7 +71,7 @@ class ReminderListFragmentTest {
             modules(listOf(myModule))
         }
 
-        // Get our real repository
+        // Get our repository
         datasource = GlobalContext.get().koin.get()
 
         runBlocking {
@@ -150,5 +153,26 @@ class ReminderListFragmentTest {
     }
 
     //    TODO: add testing for the error messages.
+//    @Test
+//    fun reminderListFragment_ShowSnackBarWithErrorMessage() {
+//        var message:String? = null
+//
+//        // When load reminders from data source
+//        runBlocking {
+//            datasource.setReturnError(true)
+//            val result = datasource.getReminders() as Result.Error
+//            message = result.message
+//        }
+//        // When fragment is launched
+//        val scenario = launchFragmentInContainer<ReminderListFragment>(Bundle(), R.style.AppTheme)
+//        val navController = mock(NavController::class.java)
+//        scenario.onFragment {
+//            Navigation.setViewNavController(it.view!!, navController)
+//        }
+//
+//        // Then - Verify that
+//        onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(isDisplayed()))
+//        onView(withId(com.google.android.material.R.id.snackbar_text)).check(matches(withText(message)))
+//    }
 
 }
