@@ -14,6 +14,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.udacity.project4.R
 import com.udacity.project4.locationreminders.RemindersActivity
 
+import com.firebase.ui.auth.AuthMethodPickerLayout
+
+
+
+
 /**
  * This class should be the starting point of the app, It asks the users to sign in / register, and redirects the
  * signed in users to the RemindersActivity.
@@ -56,12 +61,18 @@ class AuthenticationActivity : AppCompatActivity() {
             }
         })
 
-//          TODO: a bonus is to customize the sign in flow to look nice using :
+//          : a bonus is to customize the sign in flow to look nice using :
         //https://github.com/firebase/FirebaseUI-Android/blob/master/auth/README.md#custom-layout
 
     }
 
     private fun launchSignInFlow() {
+
+        val customLayout = AuthMethodPickerLayout.Builder(R.layout.custom_firebase_sign_in)
+            .setGoogleButtonId(R.id.bar)
+            .setEmailButtonId(R.id.foo)
+            .build()
+
         // Give users the option to sign in / register with their email or Google account. If users
         // choose to register with their email, they will need to create a password as well.
         val providers = arrayListOf(
@@ -72,8 +83,9 @@ class AuthenticationActivity : AppCompatActivity() {
         // SIGN_IN_RESULT_CODE code.
         startActivityForResult(
             AuthUI.getInstance().createSignInIntentBuilder().setAvailableProviders(
-                providers
-            ).build(), SIGN_IN_RESULT_CODE
+                providers)
+                .setAuthMethodPickerLayout(customLayout)
+                .build(), SIGN_IN_RESULT_CODE
         )
     }
 
