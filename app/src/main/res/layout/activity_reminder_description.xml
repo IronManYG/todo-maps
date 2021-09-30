@@ -10,24 +10,130 @@
             type="com.udacity.project4.locationreminders.reminderslist.ReminderDataItem" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:orientation="vertical"
         tools:context=".locationreminders.ReminderDescriptionActivity">
-        <!--TODO: add the design of the reminder details-->
+        <!--: add the design of the reminder details-->
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="64dp"
             android:gravity="center"
-            android:text="Reminder Details"
+            android:text="@string/reminder_details_label"
+            android:textColor="@color/black"
             android:textSize="@dimen/text_size_large"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/remider_title_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="16dp"
+            android:text="@string/reminder_title"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+        <TextView
+            android:id="@+id/remider_title_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/remider_title_label"
+            app:layout_constraintTop_toBottomOf="@+id/remider_title_label" />
+
+        <TextView
+            android:id="@+id/remider_description_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/reminder_desc"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/remider_title_field"
+            app:layout_constraintTop_toBottomOf="@+id/remider_title_field" />
+
+        <TextView
+            android:id="@+id/remider_description_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="@+id/remider_title_field"
+            app:layout_constraintStart_toStartOf="@+id/remider_description_label"
+            app:layout_constraintTop_toBottomOf="@+id/remider_description_label" />
+
+        <TextView
+            android:id="@+id/remider_location_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/reminder_location"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/remider_description_field"
+            app:layout_constraintTop_toBottomOf="@+id/remider_description_field" />
+
+        <TextView
+            android:id="@+id/remider_location_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="@+id/remider_description_field"
+            app:layout_constraintStart_toStartOf="@+id/remider_location_label"
+            app:layout_constraintTop_toBottomOf="@+id/remider_location_label" />
+
+        <TextView
+            android:id="@+id/remider_latitude_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/remider_latitude"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/remider_location_field"
+            app:layout_constraintTop_toBottomOf="@+id/remider_location_field" />
+
+        <TextView
+            android:id="@+id/remider_latitude_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="@+id/remider_location_field"
+            app:layout_constraintStart_toStartOf="@+id/remider_latitude_label"
+            app:layout_constraintTop_toBottomOf="@+id/remider_latitude_label" />
+
+        <TextView
+            android:id="@+id/remider_longitude_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/remider_longitude"
+            android:textColor="@color/black"
+            app:layout_constraintStart_toStartOf="@+id/remider_latitude_field"
+            app:layout_constraintTop_toBottomOf="@+id/remider_latitude_field" />
+
+        <TextView
+            android:id="@+id/remider_longitude_field"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text=""
+            app:layout_constraintEnd_toEndOf="@+id/remider_latitude_field"
+            app:layout_constraintStart_toStartOf="@+id/remider_longitude_label"
+            app:layout_constraintTop_toBottomOf="@+id/remider_longitude_label" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

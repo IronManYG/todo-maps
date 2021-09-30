@@ -10,7 +10,7 @@
         <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/drawable/ic_no_data.xml" value="0.3828125" />
         <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/drawable/ic_save.xml" value="0.3828125" />
         <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/layout/activity_authentication.xml" value="0.3423913043478261" />
-        <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/layout/activity_reminder_description.xml" value="0.20572916666666666" />
+        <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/layout/activity_reminder_description.xml" value="0.33" />
         <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/layout/activity_reminders.xml" value="0.3423913043478261" />
         <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/layout/custom_firebase_sign_in.xml" value="0.31068840579710144" />
         <entry key="..\:/Users/Hussain/AndroidStudioProjects/todo-maps/app/src/main/res/layout/fragment_reminders.xml" value="0.36666666666666664" />
@@ -25,7 +25,7 @@
   <component name="ProjectPlainTextFileTypeManager">
     <file url="file://$PROJECT_DIR$/app/google-services.json" />
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
