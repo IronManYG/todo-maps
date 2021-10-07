@@ -28,11 +28,11 @@ import com.udacity.project4.databinding.FragmentSaveReminderBinding
 import com.udacity.project4.locationreminders.geofence.GeofenceBroadcastReceiver
 import com.udacity.project4.locationreminders.reminderslist.ReminderDataItem
 import com.udacity.project4.utils.setDisplayHomeAsUpEnabled
-import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class SaveReminderFragment : BaseFragment() {
     //Get the view model this time as a single to be shared with the another fragment
-    override val _viewModel: SaveReminderViewModel by inject()
+    override val _viewModel: SaveReminderViewModel by sharedViewModel()
     private lateinit var binding: FragmentSaveReminderBinding
     private lateinit var reminderDataItem: ReminderDataItem
     private lateinit var geofencingClient: GeofencingClient
@@ -93,8 +93,19 @@ class SaveReminderFragment : BaseFragment() {
 //             2) save the reminder to the local db
 
             reminderDataItem = ReminderDataItem(title,description,location,latitude,longitude)
-            checkPermissionsAndStartGeofencing()
 
+            if (_viewModel.validateEnteredData(reminderDataItem)){
+                checkPermissionsAndStartGeofencing()
+            }
+
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_TURN_DEVICE_LOCATION_ON) {
+            checkDeviceLocationSettingsAndStartGeofence(false)
         }
     }
 
@@ -174,7 +185,7 @@ class SaveReminderFragment : BaseFragment() {
             // for ActivityCompat#requestPermissions for more details.
             return
         }
-        geofencingClient?.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
+        geofencingClient.addGeofences(geofencingRequest, geofencePendingIntent)?.run {
             addOnSuccessListener {
                 // Geofences added
                 _viewModel.validateAndSaveReminder(reminderDataItem)
@@ -211,10 +222,13 @@ class SaveReminderFragment : BaseFragment() {
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
                 try {
-                    // Show the dialog by calling startResolutionForResult(),
+                    // Show the dialog by calling startIntentSenderForResult(),
                     // and check the result in onActivityResult().
-                    exception.startResolutionForResult(requireActivity(),
-                        REQUEST_TURN_DEVICE_LOCATION_ON)
+//                    exception.startResolutionForResult(requireActivity(),
+//                        REQUEST_TURN_DEVICE_LOCATION_ON)
+                    startIntentSenderForResult(exception.resolution.intentSender,
+                        REQUEST_TURN_DEVICE_LOCATION_ON, null, 0, 0, 0, null)
+
                 } catch (sendEx: IntentSender.SendIntentException) {
                     Log.d(TAG, "Error geting location settings resolution: " + sendEx.message)
                 }
@@ -255,7 +269,7 @@ class SaveReminderFragment : BaseFragment() {
             // Permission denied.
             Snackbar.make(
                 binding.fragmentSaveReminder,
-                R.string.permission_denied_explanation, Snackbar.LENGTH_INDEFINITE
+                R.string.location_required_error, Snackbar.LENGTH_INDEFINITE
             )
                 .setAction(R.string.settings) {
                     // Displays App settings screen.
@@ -314,11 +328,14 @@ class SaveReminderFragment : BaseFragment() {
         }
 
         Log.d(TAG, "Request foreground only location permission")
-        ActivityCompat.requestPermissions(
-            requireActivity(),
+//        ActivityCompat.requestPermissions(
+//            requireActivity(),
+//            permissionsArray,
+//            resultCode
+//        )
+        requestPermissions(
             permissionsArray,
-            resultCode
-        )
+            resultCode)
     }
 
 }
@@ -326,6 +343,6 @@ class SaveReminderFragment : BaseFragment() {
 private const val REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE = 33
 private const val REQUEST_FOREGROUND_ONLY_PERMISSIONS_REQUEST_CODE = 34
 private const val REQUEST_TURN_DEVICE_LOCATION_ON = 29
-private const val TAG = "HuntMainActivity"
+private const val TAG = "SaveReminderFragment"
 private const val LOCATION_PERMISSION_INDEX = 0
 private const val BACKGROUND_LOCATION_PERMISSION_INDEX = 1

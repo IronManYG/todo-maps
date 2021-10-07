@@ -33,6 +33,7 @@ import org.koin.core.context.stopKoin
 import org.koin.dsl.module
 import org.koin.test.AutoCloseKoinTest
 import org.koin.test.get
+import java.lang.Thread.sleep
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -126,6 +127,7 @@ class RemindersActivityTest :
         onView(withText("DESCRIPTION")).check(matches(isDisplayed()))
 
         // 4. Verify toast message was shown.
+        sleep(2000)
         val activity = getActivity(activityScenario)
         onView(withText(R.string.reminder_saved)).inRoot(withDecorView(not(`is`(activity!!.window.decorView)))).check(matches(isDisplayed()))
 

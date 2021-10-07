@@ -77,6 +77,29 @@ class RemindersListViewModelTest {
     }
 
     @Test
+    fun loadReminders_returnsErrorWhenShouldReturnError() {
+        // Given  a data source containing a reminders list
+        val localReminders = listOf(reminder1,reminder2,reminder3).sortedBy { it.id }
+
+        dataSource = FakeDataSource(localReminders.toMutableList())
+
+        // When setReturnError
+        dataSource.setReturnError(true)
+
+        // Given a fresh RemindersListViewModel
+        remindersListViewModel=
+            RemindersListViewModel(ApplicationProvider.getApplicationContext(), dataSource)
+
+        // When loading reminders
+        remindersListViewModel.loadReminders()
+
+        // Then a snack bar with the message "No reminders found" is shown
+        val value = remindersListViewModel.showSnackBar.getOrAwaitValue()
+
+        assertThat(value,`is`("Test exception"))
+    }
+
+    @Test
     fun loadReminders_returnsErrorForNullRemindersList() {
         // Given a data source containing null
         dataSource=FakeDataSource(null)
