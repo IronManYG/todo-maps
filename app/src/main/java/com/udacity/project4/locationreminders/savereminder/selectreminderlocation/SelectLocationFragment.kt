@@ -172,7 +172,11 @@ class SelectLocationFragment : BaseFragment(), OnMapReadyCallback {
     ) {
         Log.d(TAG, "onRequestPermissionResult")
 
-        if (
+        if (isPermissionGranted()) {
+            map.setMyLocationEnabled(true)
+        }
+
+        else if (
             grantResults.isEmpty() ||
             grantResults[LOCATION_PERMISSION_INDEX] == PackageManager.PERMISSION_DENIED ||
             (requestCode == REQUEST_FOREGROUND_AND_BACKGROUND_PERMISSION_RESULT_CODE &&
